@@ -67,15 +67,23 @@ def create_app():
                     )
                 )
 
-                return {
+                partial_output = {
                     chave: valor for chave, valor
                     in zip(['cpf', 'rg', 'nascimento'], text.split()[1::2])
                 }, 200
 
-        except Exception:
-            return 'Erro na imagem', 403
+                return {**{'status': 'ok'}, **partial_output}
 
-        return 'Error', 400
+        except Exception:
+            return {
+                'status': 'Error',
+                'msg': 'Erro na image'
+            }, 403
+
+        return {
+            'status': 'Error',
+            'msg': 'internal error'
+        }, 400
 
     @app.route('/check-cpf')
     def check_cpf():
