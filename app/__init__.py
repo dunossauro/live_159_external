@@ -70,7 +70,7 @@ def create_app():
                 partial_output = {
                     chave: valor for chave, valor
                     in zip(['cpf', 'rg', 'nascimento'], text.split()[1::2])
-                }, 200
+                }
 
                 return jsonify({**{'status': 'ok'}, **partial_output}), 200
 
