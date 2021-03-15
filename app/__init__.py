@@ -69,12 +69,18 @@ def create_app():
 
                 partial_output = {
                     chave: valor for chave, valor
-                    in zip(['cpf', 'rg', 'nascimento'], text.split()[1::2])
+                    in zip(
+                        ['cpf', 'rg', 'nascimento'],
+                        text.split()[1::2]
+                    )
                 }
 
-                return jsonify({**{'status': 'ok'}, **partial_output}), 200
+                return jsonify(
+                    {**{'status': 'ok'}, **partial_output}
+                ), 200
 
-        except Exception:
+        except Exception as e:
+            print(e)
             return {
                 'status': 'Error',
                 'msg': 'Erro na image'
