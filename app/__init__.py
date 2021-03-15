@@ -67,9 +67,9 @@ def create_app():
 
         except Exception as e:
             print(e)
-            return {'status': 'Error', 'msg': 'Erro na image'}, 403
+            return {'status': 'Error', 'msg': 'Erro na imagem'}, 403
 
-        return {'status': 'Error', 'msg': 'internal error'}, 400
+        return {'status': 'Error', 'msg': 'Erro interno'}, 400
 
     @app.route('/check-cpf')
     def check_cpf():
