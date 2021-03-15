@@ -36,13 +36,15 @@ def create_app():
         """Tira dados de cpf de imagem
         ---
         parameters:
-        - name: image
+        - name: b64_image
           in: path
           type: string
           required: true
+          description: 'Pillow image bytes em base 64'
         - name: size
           in: path
           type: json
+          description: "{'x': 1280, 'y': 720}"
           required: true
         responses:
           200:
@@ -50,19 +52,29 @@ def create_app():
           400:
             description: Erro inesperado
           403:
-            description: Conteúdo inválido ou sem CPF
+            description: Payload incompleto
         """
         image = request.json.get('image', None)
         size = request.json.get('size', None)
-        if image and size:
-            image = standard_b64decode(image)
-            return image_to_string(
-                Image.frombytes(
-                    'RGBA',
-                    (size['x'], size['y']),
-                    image
+        try:
+            if image and size:
+                image = standard_b64decode(image)
+                text = image_to_string(
+                    Image.frombytes(
+                        'RGBA',
+                        (size['x'], size['y']),
+                        image
+                    )
                 )
-            ), 200
+
+                return {
+                    chave: valor for chave, valor
+                    in zip(['cpf', 'rg', 'nascimento'], text.split()[1::2]
+                }, 200
+
+        except Exception:
+            return 'Erro na imagem', 403
+
         return 'Error', 400
 
     @app.route('/check-cpf')
