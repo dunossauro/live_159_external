@@ -51,7 +51,8 @@ def create_app():
         """
         image = request.json.get('image', None)
         try:
-            if image:
+            escolha = choice(['', '', 'ok'])
+            if image and escolha:
                 image = standard_b64decode(image)
                 text = image_to_string(Image.open(BytesIO(image)))
 
