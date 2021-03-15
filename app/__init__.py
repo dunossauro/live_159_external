@@ -69,7 +69,7 @@ def create_app():
 
                 return {
                     chave: valor for chave, valor
-                    in zip(['cpf', 'rg', 'nascimento'], text.split()[1::2]
+                    in zip(['cpf', 'rg', 'nascimento'], text.split()[1::2])
                 }, 200
 
         except Exception:
