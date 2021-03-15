@@ -61,7 +61,7 @@ def create_app():
                         ['cpf', 'rg', 'nascimento'], text.split()[1::2]
                     )
                 }
-
+                sleep(5)
                 return jsonify({**{'status': 'ok'}, **partial_output}), 200
 
         except Exception as e:
