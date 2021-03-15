@@ -1,3 +1,4 @@
+from base64 import b64decode
 from random import choice, randint
 from time import sleep
 
@@ -32,11 +33,37 @@ def create_app():
 
     @app.route('/document-to-text', methods=['POST'])
     def document_to_text():
+        """Validador de CPF.
+        Aqui tudo pode acontecer.
+        Seu request pode dar certo ou errado 50% de chances
+        Seu request também pode ter delay ou não 50% de chances.
+        ---
+        parameters:
+        - name: image
+          in: path
+          type: string
+          required: true
+        - name: size
+          in: path
+          type: json
+          required: true
+        responses:
+          200:
+            description: Request de sucesso
+          400:
+            description: Erro inesperado
+          403:
+            description: Conteúdo inválido ou sem CPF
+        """
         image = request.json.get('image', None)
         size = request.json.get('size', None)
-        if image:
+        if image and size:
             return image_to_string(
-                Image.frombytes('RGBA', (size['x'], size['y']), image)
+                Image.frombytes(
+                    'RGBA',
+                    (size['x'], size['y']),
+                    b64decode(bytes(image))
+                )
             ), 200
         return 'Error', 400
 
@@ -62,7 +89,7 @@ def create_app():
         """
         args = request.args
 
-        if not 'cpf' in args:
+        if 'cpf' not in args:
             return 'Conteudo inválido', 403
 
         escolha = choice(['error', 'ok', 'ok_delay', 'delay_error'])
@@ -73,6 +100,5 @@ def create_app():
             return 'Erro inesperado', 400
 
         return {'cpf-status': cpf.validate(args['cpf'])}, 200
-
 
     return app
