@@ -30,8 +30,10 @@ def create_app():
 
     @app.route('/check-cpf')
     def check_cpf():
-        """Example endpoint returning a list of colors by palette
-        This is using docstrings for specifications.
+        """Validador de CPF.
+        Aqui tudo pode acontecer.
+        Seu request pode dar certo ou errado 50% de chances
+        Seu request também pode ter delay ou não 50% de chances.
         ---
         parameters:
         - name: cpf
@@ -51,7 +53,7 @@ def create_app():
         if not 'cpf' in args:
             return 'Conteudo inválido', 403
 
-        escolha = choice(['delay', 'error', 'ok', 'ok_delay', 'delay_error'])
+        escolha = choice(['error', 'ok', 'ok_delay', 'delay_error'])
 
         if 'delay' in escolha:
             sleep(randint(1, 10))
