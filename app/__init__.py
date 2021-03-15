@@ -51,8 +51,7 @@ def create_app():
         """
         image = request.json.get('image', None)
         try:
-            escolha = choice(['', '', 'ok'])
-            if image and escolha:
+            if image:
                 image = standard_b64decode(image)
                 text = image_to_string(Image.open(BytesIO(image)))
 
@@ -104,5 +103,45 @@ def create_app():
             return 'Erro inesperado', 400
 
         return {'cpf-status': cpf.validate(args['cpf'])}, 200
+
+    @app.route('/document-to-text-choice', methods=['POST'])
+    def document_to_text_choice():
+        """Tira dados de cpf de imagem
+        ---
+        parameters:
+        - name: b64_image
+          in: path
+          type: string
+          required: true
+          description: 'Image bytes em base 64'
+        responses:
+          200:
+            description: Request de sucesso
+          400:
+            description: Erro inesperado
+          403:
+            description: Payload incompleto
+        """
+        image = request.json.get('image', None)
+        try:
+            escolha = choice(['', '', 'ok'])
+            if image and escolha:
+                image = standard_b64decode(image)
+                text = image_to_string(Image.open(BytesIO(image)))
+
+                partial_output = {
+                    chave: valor
+                    for chave, valor in zip(
+                        ['cpf', 'rg', 'nascimento'], text.split()[1::2]
+                    )
+                }
+                sleep(5)
+                return jsonify({**{'status': 'ok'}, **partial_output}), 200
+
+        except Exception as e:
+            print(e)
+            return {'status': 'Error', 'msg': 'Erro na imagem'}, 403
+
+        return {'status': 'Error', 'msg': 'Erro interno'}, 400
 
     return app
