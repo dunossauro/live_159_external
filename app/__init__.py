@@ -119,7 +119,7 @@ def create_app():
         escolha = choice(['error', 'ok', 'ok_delay', 'delay_error'])
 
         if 'delay' in escolha:
-            sleep(randint(1, 10))
+            sleep(randint(1, 20))
         if 'error' in escolha:
             return 'Erro inesperado', 400
 
