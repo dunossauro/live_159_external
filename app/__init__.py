@@ -4,6 +4,8 @@ from time import sleep
 from flask import Flask, request
 from flasgger import Swagger
 from validate_docbr import CPF
+from pytesseract import image_to_string
+from PIL import Image
 
 cpf = CPF()
 
@@ -26,7 +28,17 @@ swagger_config = {
 
 def create_app():
     app = Flask(__name__)
-    swagger = Swagger(app, config=swagger_config)
+    Swagger(app, config=swagger_config)
+
+    @app.route('/document-to-text', methods=['POST'])
+    def document_to_text():
+        image = request.json.get('image', None)
+        size = request.json.get('size', None)
+        if image:
+            return image_to_string(
+                Image.frombytes('RGBA', (size['x'], size['y']), image)
+            ), 200
+        return 'Error', 400
 
     @app.route('/check-cpf')
     def check_cpf():
