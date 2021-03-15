@@ -1,4 +1,4 @@
-from base64 import b64decode
+from base64 import standard_b64decode
 from random import choice, randint
 from time import sleep
 
@@ -33,10 +33,7 @@ def create_app():
 
     @app.route('/document-to-text', methods=['POST'])
     def document_to_text():
-        """Validador de CPF.
-        Aqui tudo pode acontecer.
-        Seu request pode dar certo ou errado 50% de chances
-        Seu request também pode ter delay ou não 50% de chances.
+        """Tira dados de cpf de imagem
         ---
         parameters:
         - name: image
@@ -62,7 +59,7 @@ def create_app():
                 Image.frombytes(
                     'RGBA',
                     (size['x'], size['y']),
-                    b64decode(bytes(image))
+                    standard_b64decode(bytes(image))
                 )
             ), 200
         return 'Error', 400
