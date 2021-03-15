@@ -51,7 +51,7 @@ def create_app():
         if not 'cpf' in args:
             return 'Conteudo inválido', 403
 
-        escolha = choice(['delay', 'error', 'ok', 'ok_delay', 'ok_error'])
+        escolha = choice(['delay', 'error', 'ok', 'ok_delay', 'delay_error'])
 
         if 'delay' in escolha:
             sleep(randint(1, 10))
