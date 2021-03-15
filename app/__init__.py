@@ -2,7 +2,7 @@ from base64 import standard_b64decode
 from random import choice, randint
 from time import sleep
 
-from flask import Flask, request
+from flask import Flask, request, jsonify
 from flasgger import Swagger
 from validate_docbr import CPF
 from pytesseract import image_to_string
@@ -72,7 +72,7 @@ def create_app():
                     in zip(['cpf', 'rg', 'nascimento'], text.split()[1::2])
                 }, 200
 
-                return {**{'status': 'ok'}, **partial_output}
+                return jsonify({**{'status': 'ok'}, **partial_output}), 200
 
         except Exception:
             return {
