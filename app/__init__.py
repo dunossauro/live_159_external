@@ -55,11 +55,12 @@ def create_app():
         image = request.json.get('image', None)
         size = request.json.get('size', None)
         if image and size:
+            image = standard_b64decode(image)
             return image_to_string(
                 Image.frombytes(
                     'RGBA',
                     (size['x'], size['y']),
-                    standard_b64decode(bytes(image, encoding='utf8'))
+                    image
                 )
             ), 200
         return 'Error', 400
