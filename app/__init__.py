@@ -1,3 +1,4 @@
+from io import BytesIO
 from base64 import standard_b64decode
 from random import choice, randint
 from time import sleep
@@ -60,10 +61,8 @@ def create_app():
             if image and size:
                 image = standard_b64decode(image)
                 text = image_to_string(
-                    Image.frombytes(
-                        'RGBA',
-                        (size['x'], size['y']),
-                        image
+                    Image.open(
+                        BytesIO(image),
                     )
                 )
 
