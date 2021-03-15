@@ -1,19 +1,18 @@
-from io import BytesIO
 from base64 import standard_b64decode
+from io import BytesIO
 from random import choice, randint
 from time import sleep
 
-from flask import Flask, request, jsonify
 from flasgger import Swagger
-from validate_docbr import CPF
-from pytesseract import image_to_string
+from flask import Flask, jsonify, request
 from PIL import Image
+from pytesseract import image_to_string
+from validate_docbr import CPF
 
 cpf = CPF()
 
 swagger_config = {
-    'headers': [
-    ],
+    'headers': [],
     'specs': [
         {
             'endpoint': 'apispec_1',
@@ -24,7 +23,7 @@ swagger_config = {
     ],
     'static_url_path': '/flasgger_static',
     'swagger_ui': True,
-    'specs_route': '/'
+    'specs_route': '/',
 }
 
 
@@ -41,12 +40,7 @@ def create_app():
           in: path
           type: string
           required: true
-          description: 'Pillow image bytes em base 64'
-        - name: size
-          in: path
-          type: json
-          description: "{'x': 1280, 'y': 720}"
-          required: true
+          description: 'Image bytes em base 64'
         responses:
           200:
             description: Request de sucesso
@@ -56,39 +50,25 @@ def create_app():
             description: Payload incompleto
         """
         image = request.json.get('image', None)
-        size = request.json.get('size', None)
         try:
-            if image and size:
+            if image:
                 image = standard_b64decode(image)
-                text = image_to_string(
-                    Image.open(
-                        BytesIO(image),
-                    )
-                )
+                text = image_to_string(Image.open(BytesIO(image)))
 
                 partial_output = {
-                    chave: valor for chave, valor
-                    in zip(
-                        ['cpf', 'rg', 'nascimento'],
-                        text.split()[1::2]
+                    chave: valor
+                    for chave, valor in zip(
+                        ['cpf', 'rg', 'nascimento'], text.split()[1::2]
                     )
                 }
 
-                return jsonify(
-                    {**{'status': 'ok'}, **partial_output}
-                ), 200
+                return jsonify({**{'status': 'ok'}, **partial_output}), 200
 
         except Exception as e:
             print(e)
-            return {
-                'status': 'Error',
-                'msg': 'Erro na image'
-            }, 403
+            return {'status': 'Error', 'msg': 'Erro na image'}, 403
 
-        return {
-            'status': 'Error',
-            'msg': 'internal error'
-        }, 400
+        return {'status': 'Error', 'msg': 'internal error'}, 400
 
     @app.route('/check-cpf')
     def check_cpf():
