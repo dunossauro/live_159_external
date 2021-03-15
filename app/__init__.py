@@ -59,7 +59,7 @@ def create_app():
                 Image.frombytes(
                     'RGBA',
                     (size['x'], size['y']),
-                    standard_b64decode(bytes(image))
+                    standard_b64decode(bytes(image, encoding='utf8'))
                 )
             ), 200
         return 'Error', 400
